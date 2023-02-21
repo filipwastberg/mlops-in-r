@@ -1,0 +1,762 @@
+---
+title: "MLOps in R"
+author: "Filip Wästberg"
+date: "`r Sys.Date()`"
+params: 
+  red: "#DC1E32"
+  grey1: "#E6E6E6"
+  grey2: "#B4B4B4"
+  grey3: "#828282"
+  grey4: "#505050"
+  black: "#282828"
+output: 
+  xaringan::moon_reader:
+    fig_caption: false
+    css: ["style.css","font.css"]
+    seal: false
+    anchor_sections: false
+    nature:
+      ratio: 16:9
+      countIncrementalSlides: true
+      highlightStyle: atom-one-light
+      highlightLines: true
+---
+```{r setup, include=FALSE}
+library(xaringan)
+library(DT)
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo = TRUE, dpi = 300, out.width="70%", fig.height=5, message=FALSE, warning=FALSE, fig.align = "center")
+```
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+background-color: `r params$red`
+
+.solita-logomark-starter[]
+.solita-text[]
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+.header-large[MLOps in R]
+
+# 
+
+.header-small[Filip Wästberg, Data Scientist at Solita]
+<br>
+.header-small[Stockholm R User Group (SRUG)]
+
+???
+
+Here you can add notes, if you want to access the notes: press "p" during the presentation. Keep in mind, you can add images, links, equations or whatever here. This is markdown aswell!
+
+---
+
+## Welcome to the SRUG!
+
+```{r echo=FALSE}
+knitr::include_graphics("img/srug.png")
+```
+
+---
+
+```{r echo=FALSE}
+knitr::include_graphics("img/skeptic-boy-mlops.jpg")
+```
+
+---
+
+## Who am I?
+
+.pull-left[
+
+Filip Wästberg
+<br>
+<br>
+```{r echo=FALSE, out.width="50%"}
+knitr::include_graphics("img/filip-headshot-M.png")
+```
+]
+
+.pull-right[
+
+- Data Scientist at Solita
+
+- Worked mainly in R the last 6 years 
+
+- One of the organizers of SRUG
+
+]
+
+---
+
+```{r echo=FALSE, out.width="108.5%"}
+knitr::include_graphics("img/Solita company presentation Jan2023 ENG.pptx.png")
+```
+
+---
+
+### Solita is a Full Service Partner to Posit (previously RStudio)
+
+
+```{r echo=FALSE}
+knitr::include_graphics("img/posit-team.png")
+```
+
+
+```{r echo=FALSE, out.width="40%"}
+knitr::include_graphics("img/RStudio-Logo-Flat.png")
+```
+
+---
+
+## What is Machine Learning?
+
+- In the context of MLOps, every statistical model that learns from data to produce predictions
+
+```{r echo=FALSE}
+#tds9_no_larm_clean <- tds9 |> 
+#    filter(!larm) |> 
+#    mutate(date = as.Date(timestamp)) |> 
+#    select(date, temperature, consumption)
+#
+#write_csv(tds9_no_larm_clean, "data/tds9_no_larm.csv")
+```
+
+
+```{r echo=FALSE, out.width="60%"}
+library(tidyverse)
+
+tds9 <- read_csv("data/tds9_no_larm.csv")
+
+ggplot(tds9, aes(x = temperature, y = consumption)) +
+    geom_point() +
+    geom_smooth(method = "gam") +
+    theme_minimal() +
+    labs(
+        title = "Prediciting consumption with outdoor temperature"
+    )
+```
+
+---
+
+```{r}
+library(mgcv)
+
+tds9_training <- filter(tds9, date < "2020-01-01")
+tds9_test <- filter(tds9, date >= "2020-01-01")
+
+gam_tds <- gam(
+    consumption ~ s(temperature),
+    method = "REML",
+    data = tds9_training
+    )
+
+predict(gam_tds, tibble(temperature = -2))
+```
+
+
+---
+background-color: `r params$black`
+
+<br>
+<br>
+<br>
+
+.header-small[There are amazing tools for building models in R, but not as many for getting models into production]
+
+---
+
+### Scaling Machine Learning can be tough
+<br>
+<br>
+<br>
+```{r echo=FALSE}
+knitr::include_graphics("img/mlops-journey.png")
+```
+
+---
+
+## Why do we need MLOps?
+
+- Free up time for new use cases
+
+--
+
+- Speed up time to delivery
+
+--
+
+- Ensure that our models, and the assumptions we have made, hold over time
+
+---
+
+## To ensure reliability we need to monitor
+
+```{r echo=FALSE, out.width="70%"}
+knitr::include_graphics("img/mlops-value.png")
+```
+
+---
+
+## The model lifecycle
+
+```{r echo=FALSE, out.width="90%"}
+knitr::include_graphics("img/mlops-process.png")
+```
+
+---
+
+## Managing the model lifecycle requires two modes of operating
+
+.pull-left[
+.center[
+### The Lab
+
+```{r echo=FALSE, out.width="60%"}
+knitr::include_graphics("img/flask_lab_medical_medicine_experimental.svg")
+```
+
+]
+]
+
+.pull-right[
+.center[
+### The Factory
+
+```{r echo=FALSE, out.width="60%"}
+knitr::include_graphics("img/industry_building_factory_work_business.svg")
+```
+]
+]
+
+---
+
+## What is MLOps?
+
+MLOps is a combination of code, data and models
+
+```{r echo=FALSE, out.width="90%"}
+knitr::include_graphics("img/what-is-mlops.png")
+```
+
+---
+
+## Use case presentation
+
+A large retail company
+
+- Wanted to investigate if they should differentiate stores based on their location
+
+--
+
+- Using cluster analysis based on Google Maps data, public transport data and their own sales data we identified different segments of stores
+
+--
+
+- We also built a model to identify stores that sold less than expected in certain categories
+
+---
+
+## Where should we open new stores?
+
+The head of establishment saw the analysis: Cool, what if we could have a map that I could click on, see what places there are around and use the same model to estimated revenue of a new store?
+
+```{r echo=FALSE, out.width = "200px"}
+knitr::include_graphics("img/character39.png")
+```
+
+---
+
+## Let's do it
+
+```{r echo=FALSE}
+knitr::include_graphics("img/letsdo-shiny.png")
+```
+
+---
+
+## What is Shiny?
+
+- "Shiny combines the computational power of R with the interactivity of the modern web."
+
+```{r echo=FALSE, out.width = "400px"}
+knitr::include_graphics("img/shiny.png")
+```
+
+---
+
+## In a week
+
+```{r echo=FALSE}
+knitr::include_graphics("img/reitablish.png")
+```
+
+---
+
+## How do we manage the model?
+
+- Code
+- Data
+- Model
+
+---
+
+## Code
+
+```{r echo=FALSE}
+knitr::include_graphics("img/git-logo.png")
+```
+
+---
+
+## Git 
+
+```{r echo=FALSE}
+knitr::include_graphics("img/git-ex.png")
+```
+
+
+---
+
+## Data 
+
+```{r, echo=FALSE,out.width="20%", out.height="10%",fig.show='hold',fig.align='center', fig.cap="Data sources"}
+knitr::include_graphics(c("img/dbt-logo.png", "img/google_bigquery.png", "img/google-maps.png", "img/trafikverket.png"))
+```
+
+---
+
+## In the end we have a data.frame in R 
+
+```{r}
+tds9_training |> 
+    glimpse()
+```
+
+---
+
+## Things we want to keep track of:
+
+- How does the underlying data in our model change?
+
+---
+
+## Data
+
+How do we version data?
+
+```{r echo=FALSE, out.width = "200px"}
+knitr::include_graphics("img/pins.png")
+```
+
+---
+
+## Pins let you write R or Python objects 
+
+- SharePoint
+- OneDrive
+- NFS
+- Azure
+- AWS
+- Google cloud
+- Posit Connect (tidigare RStudio Connect)
+
+---
+
+## Create a board
+
+```{r}
+library(pins)
+
+temp_board <- board_temp()
+# Other boards:
+# board_rsconnect()
+# board_azure()
+# board_ms365()
+# board_s3()
+# board_local()
+
+temp_board
+```
+
+---
+
+## Write a pin
+
+```{r}
+pin_write(
+    board = temp_board,
+    x = tds9_training, 
+    name = "tds9_training", 
+    versioned = TRUE,
+    description = "Data from distict heating metering point tds9.",
+    metadata = list(source = "District heating company A")
+)
+
+tds9_train_pin <- pin_read(temp_board, "tds9_training")
+ 
+glimpse(tds9_train_pin)
+```
+
+---
+
+## There is more data!
+
+```{r echo=FALSE}
+#future_tds9 <- tds9_clean |> 
+#    filter(between(date, as.Date("2019-10-23"), as.Date("2020-01-01"))) |> 
+#    mutate(date = date + 365,
+#           consumption = consumption + rnorm(nrow(future_tds9), mean = 1, sd = 0.1),
+#           temperature = temperature + rnorm(nrow(future_tds9), mean = 1, sd = 0.1)) 
+#
+#write_csv(future_tds9, "data/future_tds9")
+```
+```{r}
+future_tds9 <- read_csv("data/future_tds9.csv")
+
+tds9_training <- bind_rows(tds9_training, future_tds9)
+
+pin_write(
+    board = temp_board,
+    x = tds9_training, 
+    name = "tds9_training", 
+    versioned = TRUE
+)
+
+pin_versions(temp_board, "tds9_training")
+```
+
+---
+
+## Alternatively do it in the database
+
+```{r echo=FALSE}
+knitr::include_graphics("img/google_bigquery.png")
+```
+
+---
+
+## Models
+
+- Keeping track of automated retraining
+
+- Deploy model
+
+- Keeping track of performance against new data (monitor)
+
+---
+
+## Vetiver
+
+The goal of vetiver is to provide fluent tooling to version, deploy, and monitor a trained model. Functions handle both recording and checking the model’s input data prototype, and predicting from a remote API endpoint.
+
+```{r echo=FALSE, out.width = "300px"}
+knitr::include_graphics("img/vetiver.png")
+```
+
+---
+
+```{r echo=FALSE, out.width = "1000px"}
+knitr::include_graphics("img/ml_ops_cycle.png")
+```
+
+---
+
+```{r}
+library(vetiver)
+
+v_gam <- vetiver_model(gam_tds, "gam_tds9", versioned = TRUE)
+
+v_gam
+```
+
+---
+
+## Write model as pin
+
+```{r}
+vetiver_pin_write(
+    board = temp_board, 
+    vetiver_model = v_gam
+    )
+
+pin_versions(temp_board, "gam_tds9")
+```
+
+---
+
+## Deployment
+
+Two common patterns:
+
+- Batch predictions
+
+--
+
+- Deploy model as an API
+
+---
+
+## Batch predictions 
+
+- Schedule a script or a RMarkdown somewhere
+
+---
+
+## Deploy model as an API
+
+- Application programming interface
+
+- Run: http://server:8000/plot and get a plot
+
+```{r echo=FALSE, out.width = "300px"}
+knitr::include_graphics("img/plumber.svg")
+```
+
+---
+
+In a `plumber.R` file:
+
+```{r eval=FALSE}
+#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function() {
+  rand <- rnorm(100)
+  hist(rand)
+}
+```
+
+
+---
+
+```{r eval=FALSE}
+library(plumber)
+pr("plumber.R") %>%
+  pr_run(port = 8000)
+```
+
+```{r echo=FALSE}
+knitr::include_graphics("img/plumber-ex.png")
+```
+
+---
+
+## If you have a vetiver model
+
+- `vetiver_write_plumber` writes the plumber file for you
+
+```{r}
+vetiver_write_plumber(temp_board, "gam_tds9")
+```
+
+--
+
+```
+curl -X POST "http://127.0.0.1:8000/predict" \
+ -H "Accept: application/json" \
+ -H "Content-Type: application/json" \
+ -d '[{"temperature":5}]'
+{".pred":[1.4402]}%
+```
+
+---
+
+## We want to deploy the API
+
+Using RStudio/Posit Connect
+
+```
+vetiver_deploy_rsconnect(
+    board = rsconnect_board,
+    name,
+    version
+)
+```
+
+--
+
+Using Docker
+
+```
+vetiver_write_docker()(
+    vetiver_model,
+    plumber_file = "plumber.R",
+    path = ".",
+    lockfile = "vetiver_renv.lock",
+    rspm = TRUE
+)
+```
+
+---
+
+## Monitoring the model
+
+In our case:
+
+- We wanted to automatically retrain the model every month
+
+- Wanted to keep track of predictions from the model
+
+--
+
+Solution:
+
+- Used Vetiver to track retrain
+
+---
+
+## Using Vetiver to track retraining
+
+```{r}
+tds9_test |> 
+    mutate(.pred = predict(gam_tds, tds9_test)) |> 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "year",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+---
+
+## Using Shiny to keep track of recommendations
+
+- We let users of the app give their own estimates 
+
+--
+
+- Let us keep track of model predictions vs human gut feeling
+
+--
+
+- In the future we might use the manual estimates in the training 
+
+---
+
+```{r}
+future_tds9 |> 
+    mutate(.pred = predict(gam_tds, future_tds9)) |> 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "year",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+---
+
+## Vetiver model monitoring
+
+```{r}
+future_metrics <- future_tds9 |> 
+    mutate(.pred = predict(gam_tds, future_tds9)) |> 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "week",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+---
+
+```{r}
+vetiver_plot_metrics(future_metrics)
+```
+
+---
+
+## The model card
+
+.pull-left[
+
+
+For transparent and responsible ML
+
+The model card outlines:
+
+- Model details
+- Intended use and how to use it
+- Important aspects/factors
+- Performance metrics
+- Training data & evaluation data
+- Quantitative analyses
+- Ethical considerations
+- Caveats & recommendations
+
+]
+
+.pull-right[
+
+```{r echo=FALSE}
+knitr::include_graphics("img/vetiver-templates.png")
+```
+
+]
+
+---
+
+## Model cards as a model repository
+
+```{r echo=FALSE}
+knitr::include_graphics("img/model-repo.png")
+```
+
+---
+
+## MLOps in R
+
+```{r echo=FALSE}
+knitr::include_graphics("img/mlops-in-r.png")
+```
+
+---
+
+## MLOps in R without Connect
+
+```{r echo=FALSE}
+knitr::include_graphics("img/mlops-in-r-gcp.png")
+```
+
+---
+
+## Summary
+
+--
+
+- The support for the three core components of MLOPs is maturing in R
+
+--
+
+--
+
+- It is very important to have good support and interest from DevOps/IT. If not, third party tools like Posit Connect can be very helpful. 
+
+--
+
+- Shiny really is amazing 
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MLOps in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Filip Wästberg" />
+    <meta name="date" content="2023-02-21" />
+    <script src="mlops-in-r_files/header-attrs/header-attrs.js"></script>
+    <link href="mlops-in-r_files/panelset/panelset.css" rel="stylesheet" />
+    <script src="mlops-in-r_files/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="font.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+background-color: #DC1E32
+
+.solita-logomark-starter[]
+.solita-text[]
+
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+
+.header-large[MLOps in R]
+
+# 
+
+.header-small[Filip Wästberg, Data Scientist at Solita]
+&lt;br&gt;
+.header-small[Stockholm R User Group (SRUG)]
+
+???
+
+Here you can add notes, if you want to access the notes: press "p" during the presentation. Keep in mind, you can add images, links, equations or whatever here. This is markdown aswell!
+
+---
+
+## Welcome to the SRUG!
+
+&lt;img src="img/srug.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;img src="img/skeptic-boy-mlops.jpg" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Who am I?
+
+.pull-left[
+
+Filip Wästberg
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="img/filip-headshot-M.png" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+- Data Scientist at Solita
+
+- Worked mainly in R the last 6 years 
+
+- One of the organizers of SRUG
+
+]
+
+---
+
+&lt;img src="img/Solita company presentation Jan2023 ENG.pptx.png" width="108.5%" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Solita is a Full Service Partner to Posit (previously RStudio)
+
+
+&lt;img src="img/posit-team.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+&lt;img src="img/RStudio-Logo-Flat.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is Machine Learning?
+
+- In the context of MLOps, every statistical model that learns from data to produce predictions
+
+
+
+
+&lt;img src="mlops-in-r_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+library(mgcv)
+
+tds9_training &lt;- filter(tds9, date &lt; "2020-01-01")
+tds9_test &lt;- filter(tds9, date &gt;= "2020-01-01")
+
+gam_tds &lt;- gam(
+    consumption ~ s(temperature),
+    method = "REML",
+    data = tds9_training
+    )
+
+predict(gam_tds, tibble(temperature = -2))
+```
+
+```
+##        1 
+## 2.821384
+```
+
+
+---
+background-color: #282828
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.header-small[There are amazing tools for building models in R, but not as many for getting models into production]
+
+---
+
+### Scaling Machine Learning can be tough
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="img/mlops-journey.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Why do we need MLOps?
+
+- Free up time for new use cases
+
+--
+
+- Speed up time to delivery
+
+--
+
+- Ensure that our models, and the assumptions we have made, hold over time
+
+---
+
+## To ensure reliability we need to monitor
+
+&lt;img src="img/mlops-value.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## The model lifecycle
+
+&lt;img src="img/mlops-process.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Managing the model lifecycle requires two modes of operating
+
+.pull-left[
+.center[
+### The Lab
+
+&lt;img src="img/flask_lab_medical_medicine_experimental.svg" width="60%" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+.pull-right[
+.center[
+### The Factory
+
+&lt;img src="img/industry_building_factory_work_business.svg" width="60%" style="display: block; margin: auto;" /&gt;
+]
+]
+
+---
+
+## What is MLOps?
+
+MLOps is a combination of code, data and models
+
+&lt;img src="img/what-is-mlops.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Use case presentation
+
+A large retail company
+
+- Wanted to investigate if they should differentiate stores based on their location
+
+--
+
+- Using cluster analysis based on Google Maps data, public transport data and their own sales data we identified different segments of stores
+
+--
+
+- We also built a model to identify stores that sold less than expected in certain categories
+
+---
+
+## Where should we open new stores?
+
+The head of establishment saw the analysis: Cool, what if we could have a map that I could click on, see what places there are around and use the same model to estimated revenue of a new store?
+
+&lt;img src="img/character39.png" width="200px" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Let's do it
+
+&lt;img src="img/letsdo-shiny.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is Shiny?
+
+- "Shiny combines the computational power of R with the interactivity of the modern web."
+
+&lt;img src="img/shiny.png" width="400px" style="display: block; margin: auto;" /&gt;
+
+---
+
+## In a week
+
+&lt;img src="img/reitablish.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## How do we manage the model?
+
+- Code
+- Data
+- Model
+
+---
+
+## Code
+
+&lt;img src="img/git-logo.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Git 
+
+&lt;img src="img/git-ex.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Data 
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/dbt-logo.png" alt="Data sources" width="20%" height="10%" /&gt;&lt;img src="img/google_bigquery.png" alt="Data sources" width="20%" height="10%" /&gt;&lt;img src="img/google-maps.png" alt="Data sources" width="20%" height="10%" /&gt;&lt;img src="img/trafikverket.png" alt="Data sources" width="20%" height="10%" /&gt;
+&lt;p class="caption"&gt;Data sources&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+## In the end we have a data.frame in R 
+
+
+```r
+tds9_training |&gt; 
+    glimpse()
+```
+
+```
+## Rows: 377
+## Columns: 3
+## $ date        &lt;date&gt; 2018-11-10, 2018-11-11, 2018-11-12, 2018-11-13, 2018-11-1…
+## $ temperature &lt;dbl&gt; 3.549490, 4.427632, 4.456676, 2.954814, 2.832908, 5.462613…
+## $ consumption &lt;dbl&gt; 1.37, 1.36, 1.33, 1.58, 1.47, 1.14, 1.46, 1.32, 1.30, 1.39…
+```
+
+---
+
+## Things we want to keep track of:
+
+- How does the underlying data in our model change?
+
+---
+
+## Data
+
+How do we version data?
+
+&lt;img src="img/pins.png" width="200px" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Pins let you write R or Python objects 
+
+- SharePoint
+- OneDrive
+- NFS
+- Azure
+- AWS
+- Google cloud
+- Posit Connect (tidigare RStudio Connect)
+
+---
+
+## Create a board
+
+
+```r
+library(pins)
+
+temp_board &lt;- board_temp()
+# Other boards:
+# board_rsconnect()
+# board_azure()
+# board_ms365()
+# board_s3()
+# board_local()
+
+temp_board
+```
+
+```
+## Pin board &lt;pins_board_folder&gt;
+## Path: '/var/folders/pn/9hhpnpd15_d2k3qp5k814nnh0000gq/T/Rtmpfya9ml/pins-b0de129de86'
+## Cache size: 0
+```
+
+---
+
+## Write a pin
+
+
+```r
+pin_write(
+    board = temp_board,
+    x = tds9_training, 
+    name = "tds9_training", 
+    versioned = TRUE,
+    description = "Data from distict heating metering point tds9.",
+    metadata = list(source = "District heating company A")
+)
+
+tds9_train_pin &lt;- pin_read(temp_board, "tds9_training")
+ 
+glimpse(tds9_train_pin)
+```
+
+```
+## Rows: 377
+## Columns: 3
+## $ date        &lt;date&gt; 2018-11-10, 2018-11-11, 2018-11-12, 2018-11-13, 2018-11-1…
+## $ temperature &lt;dbl&gt; 3.549490, 4.427632, 4.456676, 2.954814, 2.832908, 5.462613…
+## $ consumption &lt;dbl&gt; 1.37, 1.36, 1.33, 1.58, 1.47, 1.14, 1.46, 1.32, 1.30, 1.39…
+```
+
+---
+
+## There is more data!
+
+
+
+```r
+future_tds9 &lt;- read_csv("data/future_tds9.csv")
+
+tds9_training &lt;- bind_rows(tds9_training, future_tds9)
+
+pin_write(
+    board = temp_board,
+    x = tds9_training, 
+    name = "tds9_training", 
+    versioned = TRUE
+)
+
+pin_versions(temp_board, "tds9_training")
+```
+
+```
+## # A tibble: 2 × 3
+##   version                created             hash 
+##   &lt;chr&gt;                  &lt;dttm&gt;              &lt;chr&gt;
+## 1 20230221T145606Z-d81fd 2023-02-21 15:56:00 d81fd
+## 2 20230221T145606Z-f3080 2023-02-21 15:56:00 f3080
+```
+
+---
+
+## Alternatively do it in the database
+
+&lt;img src="img/google_bigquery.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Models
+
+- Keeping track of automated retraining
+
+- Deploy model
+
+- Keeping track of performance against new data (monitor)
+
+---
+
+## Vetiver
+
+The goal of vetiver is to provide fluent tooling to version, deploy, and monitor a trained model. Functions handle both recording and checking the model’s input data prototype, and predicting from a remote API endpoint.
+
+&lt;img src="img/vetiver.png" width="300px" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;img src="img/ml_ops_cycle.png" width="1000px" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+library(vetiver)
+
+v_gam &lt;- vetiver_model(gam_tds, "gam_tds9", versioned = TRUE)
+
+v_gam
+```
+
+```
+## 
+## ── gam_tds9 ─ &lt;butchered_gam&gt; model for deployment 
+## A generalized linear model (gaussian family, identity link) using 1 feature
+```
+
+---
+
+## Write model as pin
+
+
+```r
+vetiver_pin_write(
+    board = temp_board, 
+    vetiver_model = v_gam
+    )
+
+pin_versions(temp_board, "gam_tds9")
+```
+
+```
+## # A tibble: 1 × 3
+##   version                created             hash 
+##   &lt;chr&gt;                  &lt;dttm&gt;              &lt;chr&gt;
+## 1 20230221T145606Z-b355a 2023-02-21 15:56:00 b355a
+```
+
+---
+
+## Deployment
+
+Two common patterns:
+
+- Batch predictions
+
+--
+
+- Deploy model as an API
+
+---
+
+## Batch predictions 
+
+- Schedule a script or a RMarkdown somewhere
+
+---
+
+## Deploy model as an API
+
+- Application programming interface
+
+- Run: http://server:8000/plot and get a plot
+
+&lt;img src="img/plumber.svg" width="300px" style="display: block; margin: auto;" /&gt;
+
+---
+
+In a `plumber.R` file:
+
+
+```r
+#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function() {
+  rand &lt;- rnorm(100)
+  hist(rand)
+}
+```
+
+
+---
+
+
+```r
+library(plumber)
+pr("plumber.R") %&gt;%
+  pr_run(port = 8000)
+```
+
+&lt;img src="img/plumber-ex.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## If you have a vetiver model
+
+- `vetiver_write_plumber` writes the plumber file for you
+
+
+```r
+vetiver_write_plumber(temp_board, "gam_tds9")
+```
+
+--
+
+```
+curl -X POST "http://127.0.0.1:8000/predict" \
+ -H "Accept: application/json" \
+ -H "Content-Type: application/json" \
+ -d '[{"temperature":5}]'
+{".pred":[1.4402]}%
+```
+
+---
+
+## We want to deploy the API
+
+Using RStudio/Posit Connect
+
+```
+vetiver_deploy_rsconnect(
+    board = rsconnect_board,
+    name,
+    version
+)
+```
+
+--
+
+Using Docker
+
+```
+vetiver_write_docker()(
+    vetiver_model,
+    plumber_file = "plumber.R",
+    path = ".",
+    lockfile = "vetiver_renv.lock",
+    rspm = TRUE
+)
+```
+
+---
+
+## Monitoring the model
+
+In our case:
+
+- We wanted to automatically retrain the model every month
+
+- Wanted to keep track of predictions from the model
+
+--
+
+Solution:
+
+- Used Vetiver to track retrain
+
+---
+
+## Using Vetiver to track retraining
+
+
+```r
+tds9_test |&gt; 
+    mutate(.pred = predict(gam_tds, tds9_test)) |&gt; 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "year",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+```
+## # A tibble: 3 × 5
+##   .index        .n .metric .estimator .estimate
+##   &lt;date&gt;     &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 2020-01-01   290 rmse    standard       0.230
+## 2 2020-01-01   290 rsq     standard       0.954
+## 3 2020-01-01   290 mae     standard       0.158
+```
+
+---
+
+## Using Shiny to keep track of recommendations
+
+- We let users of the app give their own estimates 
+
+--
+
+- Let us keep track of model predictions vs human gut feeling
+
+--
+
+- In the future we might use the manual estimates in the training 
+
+---
+
+
+```r
+future_tds9 |&gt; 
+    mutate(.pred = predict(gam_tds, future_tds9)) |&gt; 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "year",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+```
+## # A tibble: 3 × 5
+##   .index        .n .metric .estimator .estimate
+##   &lt;date&gt;     &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 2020-10-22    70 rmse    standard       1.23 
+## 2 2020-10-22    70 rsq     standard       0.931
+## 3 2020-10-22    70 mae     standard       1.20
+```
+
+---
+
+## Vetiver model monitoring
+
+
+```r
+future_metrics &lt;- future_tds9 |&gt; 
+    mutate(.pred = predict(gam_tds, future_tds9)) |&gt; 
+    vetiver_compute_metrics(
+        date_var = date,
+        period = "week",
+        truth = consumption,
+        estimate = .pred
+        )
+```
+
+---
+
+
+```r
+vetiver_plot_metrics(future_metrics)
+```
+
+&lt;img src="mlops-in-r_files/figure-html/unnamed-chunk-42-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## The model card
+
+.pull-left[
+
+
+For transparent and responsible ML
+
+The model card outlines:
+
+- Model details
+- Intended use and how to use it
+- Important aspects/factors
+- Performance metrics
+- Training data &amp; evaluation data
+- Quantitative analyses
+- Ethical considerations
+- Caveats &amp; recommendations
+
+]
+
+.pull-right[
+
+&lt;img src="img/vetiver-templates.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+## Model cards as a model repository
+
+&lt;img src="img/model-repo.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## MLOps in R
+
+&lt;img src="img/mlops-in-r.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## MLOps in R without Connect
+
+&lt;img src="img/mlops-in-r-gcp.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Summary
+
+--
+
+- The support for the three core components of MLOPs is maturing in R
+
+--
+
+--
+
+- It is very important to have good support and interest from DevOps/IT. If not, third party tools like Posit Connect can be very helpful. 
+
+--
+
+- Shiny really is amazing 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"countIncrementalSlides": true,
+"highlightStyle": "atom-one-light",
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+---
+title: "mlops-example"
+author: "Filip Wästberg"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Läs in och städa data något.
+
+```{r}
+library(tidyverse)
+library(mgcv)
+library(vetiver)
+library(pins)
+
+tds9 <- read_csv("presentation/data/tds9.csv")
+
+tds9_clean <- tds9 |> 
+    mutate(date = as.Date(timestamp),
+           across(consumption:temperature, ~round(., 3))) |> 
+    select(date, consumption, temperature) 
+
+```
+
+Skapa en board med pins:
+
+```{r}
+library(pins)
+
+board <- board_temp()
+
+board
+```
+
+Skriv dataset till en board:
+
+```{r}
+pin_write(
+    board, tds9_clean, 
+    "tds9_clean", 
+    versioned = TRUE,
+    description = "Data from distict heating metering point tds9.",
+    metadata = list(source = "District heating company A")
+)
+
+pin_read(board, "tds9_clean") |> 
+    head()
+```
+
+Lägg till lite ny data
+
+```{r}
+new_data <- tibble(
+    date = as.Date("2020-10-22"),
+    temperature = 8.154,
+    consumption = 1.12
+)
+
+tds9_new_data <- bind_rows(new_data, tds9_clean)
+
+tds9_new_data |> 
+    head()
+```
+
+Skriv en till version av data
+
+```{r}
+pin_write(board, tds9_new_data, "tds9_clean", versioned = TRUE)
+
+pin_versions(board, "tds9_clean")
+```
+
+Exempel på datadrift:
+
+
+```{r}
+library(drifter)
+library(DALEX)
+
+dragons <- DALEX::dragons
+dragons_test <- DALEX::dragons_test
+
+d <- calculate_covariate_drift(dragons, dragons_test)
+d
+```
+
+Träna en modell och spara till board.
+
+```{r}
+library(mgcv)
+
+tds9_train <- filter(tds9_clean, date < "2020-08-01")
+tds9_test <- filter(tds9_clean, date >= "2020-08-01")
+
+pin_write(board, tds9_test, "tds9_test")
+
+dh_gam <- gam(consumption ~ s(temperature), data = tds9_train)
+
+v <- vetiver_model(dh_gam, "dh_gam", description = "A generalized addative model")
+
+vetiver_pin_write(board, v, "dh_gam")
+
+v
+```
+
+Ta fram metrics
+
+```{r}
+tds9_metrics <- augment(dh_gam, new_data = tds9_train) %>%
+    mutate(date = tds9_train$date) |> 
+    vetiver_compute_metrics(date, period = "month", truth = consumption, 
+                            estimate = .fitted, every = 4L)
+```
+
+
+Visualisera metrics över tid.
+
+```{r}
+vetiver_plot_metrics(tds9_metrics)
+```
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="64px" height="64px"
+	 viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+<metadata>
+	<sfw  xmlns="&ns_sfw;">
+		<slices></slices>
+		<sliceSourceBounds  y="-8160" x="-8165" width="16389" height="16384" bottomLeftOrigin="true"></sliceSourceBounds>
+		<optimizationSettings>
+			<targetSettings  targetSettingsID="0" fileFormat="PNG24Format">
+				<PNG24Format  transparency="true" filtered="false" interlaced="false" noMatteColor="false" matteColor="#FFFFFF">
+					</PNG24Format>
+			</targetSettings>
+		</optimizationSettings>
+	</sfw>
+</metadata>
+<g id="Ebene_2">
+</g>
+<g id="Ebene_1">
+	<g>
+		<path d="M52.44,55.763L38.5,29.874V8.5H44c0.276,0,0.5-0.224,0.5-0.5S44.276,7.5,44,7.5H20c-0.276,0-0.5,0.224-0.5,0.5
+			s0.224,0.5,0.5,0.5h5.5v21.374L11.56,55.763c-0.083,0.155-0.079,0.343,0.011,0.494c0.09,0.15,0.253,0.243,0.429,0.243h40
+			c0.176,0,0.339-0.093,0.43-0.243C52.52,56.105,52.523,55.918,52.44,55.763z M12.837,55.5L26.44,30.237
+			c0.039-0.073,0.06-0.154,0.06-0.237V8.5h11V30c0,0.083,0.021,0.164,0.06,0.237L51.163,55.5H12.837z"/>
+		<circle cx="28" cy="44" r="2"/>
+		<circle cx="34" cy="40" r="2"/>
+		<circle cx="36" cy="48" r="2"/>
+	</g>
+</g>
+</svg>

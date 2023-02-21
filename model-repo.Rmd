@@ -1,0 +1,110 @@
+---
+title: "Our model repository"
+output: 
+  html_document:
+    code_folding: show
+    theme:
+      bg: "#f8f8f8"
+      fg: "#282828"
+      primary: "#282828"
+      secondary: "#00DAC6"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+```
+
+## Model repository
+
+We have three models in production right now. You can look at their individual model cards to understand:
+
+- Model details
+- Intended use and how to use it
+- Important aspects/factors
+- Performance metrics
+- Training data & evaluation data
+- Quantitative analyses
+- Ethical considerations
+- Caveats & recommendations
+
+## Model repository {.tabset .tabset-pills}
+
+Our models
+
+### Store revenue prediction
+
+Brief description of model
+
+```{r}
+library(tidyverse)
+library(gt)
+tibble(
+    model_name = "Store predictions",
+    version = "20230220T121352Z-9f8f2",
+    last_updated = "2023-02-20",
+    about_model = c("https://www.bbc.com/news")
+) |> 
+    mutate(
+        about_model = map(about_model, ~ htmltools::a(href = .x, "Model card")),
+        about_model = map(about_model, ~ gt::html(as.character(.x)))) |> 
+    gt::gt() |> 
+    cols_label(
+        model_name = "Model name",
+        version = "Version",
+        last_updated = "Last updated",
+        about_model = "About model"
+    )
+```
+
+### Sales forecasting model
+
+Brief description of model
+
+```{r}
+tibble(
+    model_name = "Sales forecasting model",
+    version = "20230220T121352Z-9f8f2",
+    last_updated = "2023-02-20",
+    about_model = c("https://www.bbc.com/news")
+) |> 
+    mutate(
+        about_model = map(about_model, ~ htmltools::a(href = .x, "Model card")),
+        about_model = map(about_model, ~ gt::html(as.character(.x)))) |> 
+    gt::gt() |> 
+    cols_label(
+        model_name = "Model name",
+        version = "Version",
+        last_updated = "Last updated",
+        about_model = "About model"
+    )
+```
+
+### Store clustering model
+
+Brief description of model
+
+```{r}
+tibble(
+    model_name = "Clustering model",
+    version = "20230220T121352Z-9f8f2",
+    last_updated = "2023-02-20",
+    about_model = c("https://www.bbc.com/news")
+) |> 
+    mutate(
+        about_model = map(about_model, ~ htmltools::a(href = .x, "Model card")),
+        about_model = map(about_model, ~ gt::html(as.character(.x)))) |> 
+    gt::gt() |> 
+    cols_label(
+        model_name = "Model name",
+        version = "Version",
+        last_updated = "Last updated",
+        about_model = "About model"
+    )
+```

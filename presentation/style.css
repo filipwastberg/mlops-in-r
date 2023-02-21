@@ -1,0 +1,89 @@
+.remark-code {
+  display: block;
+  overflow-x: auto;
+  padding: .5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.solita-logomark-starter{
+  background-image: url(images/LOGOMARK/LOGOMARK/SVG/LOGOMARK_NEGA_RGB.svg);
+  background-size: 120px;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: -5%;
+  left: 7.5%;
+}
+
+.solita-logomark{
+  background-image: url(images/LOGOMARK/LOGOMARK/SVG/LOGOMARK_NEGA_RGB.svg);
+  background-size: 50px;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: -3%;
+  left: 94%;
+}
+
+.solita-logomark-black{
+  background-image: url(images/LOGOMARK/LOGOMARK/SVG/LOGOMARK_BLACK_RGB.svg);
+  background-size: 50px;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: -3%;
+  left: 94%;
+}
+
+.solita-text{
+  background-image: url(images/LOGOTYPE/SVG/SOLITA_NEGA_RGB.svg);
+  background-size: 200px;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 50%;
+  transform-origin: 0 0;
+  transform: rotate(90deg);
+  left: 98%;
+}
+
+/* Two-column layout */
+.left-column {
+  width: 20%;
+  height: 92%;
+  float: left;
+}
+.left-column h2, .left-column h3 {
+  color: #DC1E3299;
+}
+.left-column h2:last-of-type, .left-column h3:last-child {
+  color: #DC1E32;
+}
+.right-column {
+  width: 75%;
+  float: right;
+  padding-top: 1em;
+}
+.pull-left {
+  float: left;
+  width: 47%;
+}
+.pull-right {
+  float: right;
+  width: 47%;
+}
+.pull-right + * {
+  clear: both;
+}
+
+.remark-code, .remark-inline-code {
+  font-family: var(--code-font-family), Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+}
+.remark-code {
+  font-size: var(--code-font-size);
+}

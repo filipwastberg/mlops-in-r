@@ -1,0 +1,83 @@
+@font-face {
+  font-family: 'CenturyGothic-bold';
+  src: url('century-gothic-font/GOTHICB.TTF') format('truetype');
+}
+
+body {
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  color: #505050;
+  background-color: #282828;
+}
+
+code {
+  background-color: #FFFFFF
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  color: #505050;
+  line-height: 1;
+}
+
+.classic h1,h2,h3,h4,h5,h6 {
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  color: #505050;
+  line-height: 1;
+}
+
+.header-large{
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  font-size: 140px;
+  color: #E6E6E6;
+}
+
+.header-small{
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  font-size: 30px;
+  color: #E6E6E6;
+}
+
+.remark-slide-number {
+  font-size: 14pt;
+  margin-bottom: -11.6px;
+  margin-right: 5px;
+  color: #FFFFFF; /* white */
+  opacity: 0; /* default: 0.5 */
+}
+
+.theme-red-white{
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  color: #DC1E32;
+  background-color: #E6E6E6;
+}
+
+.header-large2{
+  font-family: 'CenturyGothic-bold';
+  font-weight: bold;
+  font-size: 44px;
+  color: #DC1E32;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.margin-excel{
+  padding-right: 55%;
+}
+
+.margin-excel58{
+  padding-right: 55%;
+}
+
+.margin-excel-long{
+  padding-right: 65%;
+}
+
+.margin-right{
+  padding-left: 63%;
+}
