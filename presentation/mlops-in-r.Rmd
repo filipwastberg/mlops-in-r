@@ -21,6 +21,7 @@ output:
       highlightStyle: atom-one-light
       highlightLines: true
 ---
+
 ```{r setup, include=FALSE}
 library(xaringan)
 library(DT)
@@ -68,12 +69,6 @@ knitr::include_graphics("img/srug.png")
 
 ---
 
-```{r echo=FALSE}
-knitr::include_graphics("img/skeptic-boy-mlops.jpg")
-```
-
----
-
 ## Who am I?
 
 .pull-left[
@@ -91,6 +86,8 @@ knitr::include_graphics("img/filip-headshot-M.png")
 - Data Scientist at Solita
 
 - Worked mainly in R the last 6 years 
+
+- Love maps, check out my package [github.com/filipwastberg/swemaps2](https://github.com/filipwastberg/swemaps2)
 
 - One of the organizers of SRUG
 
@@ -115,6 +112,27 @@ knitr::include_graphics("img/posit-team.png")
 ```{r echo=FALSE, out.width="40%"}
 knitr::include_graphics("img/RStudio-Logo-Flat.png")
 ```
+
+---
+
+```{r echo=FALSE}
+knitr::include_graphics("img/skeptic-boy-mlops.jpg")
+```
+
+
+---
+
+## Agenda
+
+- What is MLOps? (consultant buzzword slides)
+
+--
+
+- Packages for MLOps in R
+
+--
+
+- MLOps in R in a real world use case
 
 ---
 
@@ -175,7 +193,9 @@ background-color: `r params$black`
 
 ---
 
-### Scaling Machine Learning can be tough
+## Building a model is easy
+
+Scaling Data Science is hard
 <br>
 <br>
 <br>
@@ -185,37 +205,7 @@ knitr::include_graphics("img/mlops-journey.png")
 
 ---
 
-## Why do we need MLOps?
-
-- Free up time for new use cases
-
---
-
-- Speed up time to delivery
-
---
-
-- Ensure that our models, and the assumptions we have made, hold over time
-
----
-
-## To ensure reliability we need to monitor
-
-```{r echo=FALSE, out.width="70%"}
-knitr::include_graphics("img/mlops-value.png")
-```
-
----
-
-## The model lifecycle
-
-```{r echo=FALSE, out.width="90%"}
-knitr::include_graphics("img/mlops-process.png")
-```
-
----
-
-## Managing the model lifecycle requires two modes of operating
+## Two modes of Data Science
 
 .pull-left[
 .center[
@@ -240,7 +230,37 @@ knitr::include_graphics("img/industry_building_factory_work_business.svg")
 
 ---
 
+## Why do we need MLOps?
+
+- Free up time for new use cases
+
+--
+
+- Speed up time to delivery
+
+--
+
+- Ensure that our models, and the assumptions we have made, hold over time
+
+---
+
+## With great powers comes great responsibility
+
+```{r echo=FALSE, out.width="70%"}
+knitr::include_graphics("img/mlops-value.png")
+```
+
+---
+
 ## What is MLOps?
+
+```{r echo=FALSE, out.width="90%"}
+knitr::include_graphics("img/mlops-def.png")
+```
+
+---
+
+## Practically, what is MLOps?
 
 MLOps is a combination of code, data and models
 
@@ -250,54 +270,10 @@ knitr::include_graphics("img/what-is-mlops.png")
 
 ---
 
-## Use case presentation
+## The model lifecycle
 
-A large retail company
-
-- Wanted to investigate if they should differentiate stores based on their location
-
---
-
-- Using cluster analysis based on Google Maps data, public transport data and their own sales data we identified different segments of stores
-
---
-
-- We also built a model to identify stores that sold less than expected in certain categories
-
----
-
-## Where should we open new stores?
-
-The head of establishment saw the analysis: Cool, what if we could have a map that I could click on, see what places there are around and use the same model to estimated revenue of a new store?
-
-```{r echo=FALSE, out.width = "200px"}
-knitr::include_graphics("img/character39.png")
-```
-
----
-
-## Let's do it
-
-```{r echo=FALSE}
-knitr::include_graphics("img/letsdo-shiny.png")
-```
-
----
-
-## What is Shiny?
-
-- "Shiny combines the computational power of R with the interactivity of the modern web."
-
-```{r echo=FALSE, out.width = "400px"}
-knitr::include_graphics("img/shiny.png")
-```
-
----
-
-## In a week
-
-```{r echo=FALSE}
-knitr::include_graphics("img/reitablish.png")
+```{r echo=FALSE, out.width="90%"}
+knitr::include_graphics("img/mlops-process.png")
 ```
 
 ---
@@ -308,38 +284,58 @@ knitr::include_graphics("img/reitablish.png")
 - Data
 - Model
 
+```{r}
+gam_tds
+```
+
 ---
 
 ## Code
 
-```{r echo=FALSE}
+- Write code that is easy to read
+
+--
+
+- Write DRY code (Don't Repeat Yourself)
+
+--
+
+- Use SOME folder structure 
+
+```
+my_ml_project/
+--- /R
+--- /data-raw
+--- /data
+--- /Rmd
+--- README.Rmd
+```
+
+--
+
+- Use version control
+
+```{r echo=FALSE, out.width="100px"}
 knitr::include_graphics("img/git-logo.png")
 ```
 
 ---
 
-## Git 
+## Git
 
 ```{r echo=FALSE}
 knitr::include_graphics("img/git-ex.png")
 ```
 
-
 ---
 
-## Data 
+## MLOps: Data
 
-```{r, echo=FALSE,out.width="20%", out.height="10%",fig.show='hold',fig.align='center', fig.cap="Data sources"}
-knitr::include_graphics(c("img/dbt-logo.png", "img/google_bigquery.png", "img/google-maps.png", "img/trafikverket.png"))
-```
-
----
-
-## In the end we have a data.frame in R 
+In the end we have a data.frame in R 
 
 ```{r}
 tds9_training |> 
-    glimpse()
+    head()
 ```
 
 ---
@@ -347,6 +343,10 @@ tds9_training |>
 ## Things we want to keep track of:
 
 - How does the underlying data in our model change?
+
+--
+
+- In some cases we need historic data for regulations
 
 ---
 
@@ -368,7 +368,7 @@ knitr::include_graphics("img/pins.png")
 - Azure
 - AWS
 - Google cloud
-- Posit Connect (tidigare RStudio Connect)
+- Posit Connect (previously RStudio Connect)
 
 ---
 
@@ -378,30 +378,50 @@ knitr::include_graphics("img/pins.png")
 library(pins)
 
 temp_board <- board_temp()
-# Other boards:
-# board_rsconnect()
-# board_azure()
-# board_ms365()
-# board_s3()
-# board_local()
 
 temp_board
 ```
 
+--
+
+Example of other boards:
+
+- board_rsconnect()
+- board_azure()
+- board_ms365()
+- board_s3()
+- board_local()
+
 ---
 
-## Write a pin
+#### Write a pin
 
 ```{r}
 pin_write(
     board = temp_board,
     x = tds9_training, 
     name = "tds9_training", 
-    versioned = TRUE,
+    versioned = TRUE, ## Turn on versioning
     description = "Data from distict heating metering point tds9.",
     metadata = list(source = "District heating company A")
 )
 
+pin_list(temp_board)
+```
+
+--
+
+Each pin gets a version:
+
+```{r}
+pin_versions(temp_board, "tds9_training")
+```
+
+---
+
+## Reading a pin
+
+```{r}
 tds9_train_pin <- pin_read(temp_board, "tds9_training")
  
 glimpse(tds9_train_pin)
@@ -424,7 +444,11 @@ glimpse(tds9_train_pin)
 future_tds9 <- read_csv("data/future_tds9.csv")
 
 tds9_training <- bind_rows(tds9_training, future_tds9)
+```
 
+--
+
+```{r}
 pin_write(
     board = temp_board,
     x = tds9_training, 
@@ -437,21 +461,29 @@ pin_versions(temp_board, "tds9_training")
 
 ---
 
-## Alternatively do it in the database
+## Caveat for Pins
 
-```{r echo=FALSE}
-knitr::include_graphics("img/google_bigquery.png")
-```
+- Works great for small datasets
+
+--
+
+- Not ideal for large datasets
+
+--
+
+- If data > 500mb you should probably use a database instead
+
+--
+
+- Check out our last Meetup: Three strategies to Tackle Big Data in R 
 
 ---
 
-## Models
-
-- Keeping track of automated retraining
+## MLOps: Models
 
 - Deploy model
 
-- Keeping track of performance against new data (monitor)
+- Monitor model
 
 ---
 
@@ -470,6 +502,19 @@ knitr::include_graphics("img/ml_ops_cycle.png")
 ```
 
 ---
+
+## Vetiver
+
+Vetiver supports the most common ml libraries:
+
+- caret
+- ml3
+- tidymodels
+- mgcv 
+- xgboost
+- `lm()` and `glm()`
+
+--
 
 ```{r}
 library(vetiver)
@@ -510,6 +555,14 @@ Two common patterns:
 
 - Schedule a script or a RMarkdown somewhere
 
+- Write the data to where it should be
+
+- Think about your environment
+
+```{r echo=FALSE, out.width = "100px"}
+knitr::include_graphics("img/renv.svg")
+```
+
 ---
 
 ## Deploy model as an API
@@ -545,7 +598,7 @@ pr("plumber.R") %>%
   pr_run(port = 8000)
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.width = "600px"}
 knitr::include_graphics("img/plumber-ex.png")
 ```
 
@@ -555,23 +608,61 @@ knitr::include_graphics("img/plumber-ex.png")
 
 - `vetiver_write_plumber` writes the plumber file for you
 
-```{r}
+```{r eval=FALSE}
 vetiver_write_plumber(temp_board, "gam_tds9")
 ```
 
 --
+```
+# Generated by the vetiver package; edit with care
+
+library(pins)
+library(plumber)
+library(rapidoc)
+library(vetiver)
+b <- board_folder(path = "/var/folders/pn/9hhpnpd15_d2k3qp5k814nnh0000gq/T/Rtmpnh1uLR/pins-73b625952e3f")
+v <- vetiver_pin_read(b, "gam_tds9")
+
+#* @plumber
+function(pr) {
+    pr %>% vetiver_api(v)
+}
+```
+
+---
+
+## Query the API
 
 ```
 curl -X POST "http://127.0.0.1:8000/predict" \
  -H "Accept: application/json" \
  -H "Content-Type: application/json" \
  -d '[{"temperature":5}]'
+```
+
+Result: 
+
+```
 {".pred":[1.4402]}%
 ```
 
 ---
 
 ## We want to deploy the API
+
+Using Docker and a cloud platform or own server:
+
+```
+vetiver_write_docker(
+    vetiver_model,
+    plumber_file = "plumber.R",
+    path = ".",
+    lockfile = "vetiver_renv.lock",
+    rspm = TRUE
+)
+```
+
+--
 
 Using RStudio/Posit Connect
 
@@ -583,39 +674,17 @@ vetiver_deploy_rsconnect(
 )
 ```
 
---
-
-Using Docker
-
-```
-vetiver_write_docker()(
-    vetiver_model,
-    plumber_file = "plumber.R",
-    path = ".",
-    lockfile = "vetiver_renv.lock",
-    rspm = TRUE
-)
-```
-
 ---
 
 ## Monitoring the model
 
-In our case:
+- If we have automatic retraining we want to monitor the training pipeline
 
-- We wanted to automatically retrain the model every month
-
-- Wanted to keep track of predictions from the model
-
---
-
-Solution:
-
-- Used Vetiver to track retrain
+- Keep track of predictions from the model and how they perform 
 
 ---
 
-## Using Vetiver to track retraining
+## Using Vetiver to track performance
 
 ```{r}
 tds9_test |> 
@@ -628,32 +697,6 @@ tds9_test |>
         )
 ```
 
----
-
-## Using Shiny to keep track of recommendations
-
-- We let users of the app give their own estimates 
-
---
-
-- Let us keep track of model predictions vs human gut feeling
-
---
-
-- In the future we might use the manual estimates in the training 
-
----
-
-```{r}
-future_tds9 |> 
-    mutate(.pred = predict(gam_tds, future_tds9)) |> 
-    vetiver_compute_metrics(
-        date_var = date,
-        period = "year",
-        truth = consumption,
-        estimate = .pred
-        )
-```
 
 ---
 
@@ -710,15 +753,149 @@ knitr::include_graphics("img/vetiver-templates.png")
 
 ## Model cards as a model repository
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.width="700px"}
 knitr::include_graphics("img/model-repo.png")
 ```
 
 ---
 
-## MLOps in R
+## What other packages are there for MLOps?
+
+--
+
+- `mlflow`, great support for Python, exeperiment tracking, stable R API, connections and templates to Docker, Azure, AWS
+
+--
+
+- `azureml` has a R API
+
+--
+
+- `vertex AI` (prev. Google AI) has support for `plumber` 
+
+---
+
+## How does it work in the real world?
+
+--
+
+### Use case presentation
+
+A large retail company
+
+- Wanted to investigate if they should differentiate stores based on their location
+
+--
+
+- Using cluster analysis based on Google Maps data, public transport data and their own sales data we identified different segments of stores
+
+--
+
+- We also built a model to pin point stores that sold less than expected in certain categories
+
+---
+
+## Where should we open new stores?
+
+The head of establishment saw the analysis: 
+
+>> Cool, what if we could have a map that I could click on, see what places there are around and use the same model to estimated revenue of a new store?
+
+```{r echo=FALSE, out.width = "200px"}
+knitr::include_graphics("img/character39.png")
+```
+
+---
+
+## Let's do it
 
 ```{r echo=FALSE}
+knitr::include_graphics("img/letsdo-shiny.png")
+```
+
+---
+
+## What is Shiny?
+
+- "Shiny combines the computational power of R with the interactivity of the modern web."
+
+```{r echo=FALSE, out.width = "400px"}
+knitr::include_graphics("img/shiny.png")
+```
+
+---
+
+## In a week
+
+```{r echo=FALSE}
+knitr::include_graphics("img/reitablish.png")
+```
+
+---
+
+## MLOps: Data 
+
+Data from many different sources
+
+```{r, echo=FALSE,out.width="20%", out.height="10%",fig.show='hold',fig.align='center', fig.cap="Data sources"}
+knitr::include_graphics(c("img/dbt-logo.png", "img/google_bigquery.png", "img/google-maps.png", "img/trafikverket.png"))
+```
+
+- Used database and `dbt` to manage data 
+
+---
+
+## MLOps: Models
+
+Deployment: Vetiver Model on RStudio/Posit Connect
+
+```{r echo=FALSE}
+knitr::include_graphics("img/rsc-172-content.png")
+```
+
+---
+
+## Pins + Vetiver
+
+- To version data we used `pins` and `vetiver`
+
+--
+
+- The model was a `vetiver` pin on Connect
+
+--
+
+- Calculated metrics with `vetiver` and stored as pin + database
+
+---
+
+## Using Shiny to keep track of model performance
+
+--
+
+- The shiny app gives estimates of revenue for a new store 
+
+--
+
+- They are always going to be wrong
+
+--
+
+- So we also let users give their own estimates 
+
+--
+
+- Let us keep track of model predictions vs human gut feeling
+
+--
+
+- In the future we might use the manual estimates in the training 
+
+---
+
+## MLOps in R
+
+```{r echo=FALSE, out.width="1000px"}
 knitr::include_graphics("img/mlops-in-r.png")
 ```
 
@@ -726,7 +903,7 @@ knitr::include_graphics("img/mlops-in-r.png")
 
 ## MLOps in R without Connect
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.width="1000px"}
 knitr::include_graphics("img/mlops-in-r-gcp.png")
 ```
 
@@ -737,8 +914,6 @@ knitr::include_graphics("img/mlops-in-r-gcp.png")
 --
 
 - The support for the three core components of MLOPs is maturing in R
-
---
 
 --
 

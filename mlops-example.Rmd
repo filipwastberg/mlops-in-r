@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Läs in och städa data något.
+Read some data:
 
 ```{r}
 library(tidyverse)
@@ -26,7 +26,7 @@ tds9_clean <- tds9 |>
 
 ```
 
-Skapa en board med pins:
+Create a board
 
 ```{r}
 library(pins)
@@ -36,7 +36,7 @@ board <- board_temp()
 board
 ```
 
-Skriv dataset till en board:
+Write dataset to board
 
 ```{r}
 pin_write(
@@ -51,7 +51,7 @@ pin_read(board, "tds9_clean") |>
     head()
 ```
 
-Lägg till lite ny data
+Add some new data
 
 ```{r}
 new_data <- tibble(
@@ -66,7 +66,7 @@ tds9_new_data |>
     head()
 ```
 
-Skriv en till version av data
+Add a new version of dataset
 
 ```{r}
 pin_write(board, tds9_new_data, "tds9_clean", versioned = TRUE)
@@ -74,8 +74,7 @@ pin_write(board, tds9_new_data, "tds9_clean", versioned = TRUE)
 pin_versions(board, "tds9_clean")
 ```
 
-Exempel på datadrift:
-
+Calcualte datadrift
 
 ```{r}
 library(drifter)
@@ -88,7 +87,7 @@ d <- calculate_covariate_drift(dragons, dragons_test)
 d
 ```
 
-Träna en modell och spara till board.
+Train a model and save to board
 
 ```{r}
 library(mgcv)
@@ -107,15 +106,14 @@ vetiver_pin_write(board, v, "dh_gam")
 v
 ```
 
-Ta fram metrics
+Get metrics on test:
 
 ```{r}
-tds9_metrics <- augment(dh_gam, new_data = tds9_train) %>%
+tds9_metrics <- augment(dh_gam, new_data = tds9_test) %>%
     mutate(date = tds9_train$date) |> 
     vetiver_compute_metrics(date, period = "month", truth = consumption, 
                             estimate = .fitted, every = 4L)
 ```
-
 
 Visualisera metrics över tid.
 
